@@ -20,39 +20,39 @@ dvc repro
 
   ```bash
   $ dvc dag
-                +--------------+
-                | make_dataset |
-                +--------------+
-                 ***          ***
-                *                *
-              **                  **
-  +------------------+          +-------+
-  | get_avg_accuracy |          | train |
-  +------------------+          +-------+
-            *                        *
-            *                        *
-            *                        *
-    +-------------+         +---------------+
-    | group_stats |         | score_classes |
-    +-------------+         +---------------+
-                                     *
-                                     *
-                                     *
-                              +-----------+
-                              | aggregate |
-                              +-----------+
-                                     *
-                                     *
-                                     *
-                             +--------------+
-                             | rank_metrics |
-                             +--------------+
-                                     *
-                                     *
-                                     *
-                             +--------------+
-                             | plot_metrics |
-                             +--------------+
+    +--------------+         +-----------------+
+    | make_dataset |         | configure_train |
+    +--------------+***      +-----------------+
+            *          *****          *
+            *               ****      *
+            *                   ***   *
+  +------------------+            +-------+
+  | get_avg_accuracy |            | train |
+  +------------------+            +-------+
+            *                         *
+            *                         *
+            *                         *
+    +-------------+           +---------------+
+    | group_stats |           | score_classes |
+    +-------------+           +---------------+
+                                      *
+                                      *
+                                      *
+                                +-----------+
+                                | aggregate |
+                                +-----------+
+                                      *
+                                      *
+                                      *
+                              +--------------+
+                              | rank_metrics |
+                              +--------------+
+                                      *
+                                      *
+                                      *
+                              +--------------+
+                              | plot_metrics |
+                              +--------------+
   +----------------+
   | plot_avg_trace |
   +----------------+
@@ -62,6 +62,7 @@ dvc repro
   ```
   $ dvc stage list
   make_dataset      Create groups of datasets of different sizes & number of classes.
+  configure_train   Configure the model training pipeline.
   train             Train models and get out-of-sample predicted probabilities on the training sets.
   get_avg_accuracy  Get model performance metrics on test sets, with and without label errors.
   group_stats       Summarize model performance metrics for each group of datasets.
@@ -72,11 +73,8 @@ dvc repro
   plot_avg_trace    Plot average traces of noise matrices used for noisy label generation.
   ```
 
-  - The `group_stats` stage outputs two files in `data/accuracies/`:
-    - `results_group.csv`: All experimental results
-    - `results_agg.json`: Overall stats for the different aggregator methods.
 
-  - The stages have variouus output files and directories. This is best viewed with `dvc dag -o`. Ignoring most of the intermediate files, the most relevant files are:
+  - The stages have various output files and directories. This is best viewed with `dvc dag -o`. Ignoring most of the intermediate files, the most relevant files are:
     - data/accuracy/results_group.csv: Statistics of model performance metrics for each group of datasets.
     - data/scores/results.csv: Class label quality scores for each example in each dataset.
     - data/scores/metrics.csv: Statistics of label error detection and ranking metrics for each group of datasets.
